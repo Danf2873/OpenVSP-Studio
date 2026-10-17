@@ -1,0 +1,24 @@
+{
+  "bundle": {
+    "targets": ["deb"],
+    "resources": {
+      "../bundle/openvsp/": "openvsp/",
+      "../bundle/python/": null
+    },
+    "linux": {
+      "deb": {
+        "depends": [
+          "python3 (>= 3.12)",
+          "python3-numpy",
+          "python3-six",
+          "libpython3.12t64 | libpython3.12",
+          "libcminpack1",
+          "libxml2",
+          "libgomp1",
+          "libglew2.2",
+          "libglu1-mesa | libglu1"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,131 @@
+# Builds OpenVSP Studio installers for Windows, macOS and Linux and attaches them
+# to a GitHub release. Push a tag like v0.1.0 (or run it by hand from the Actions tab).
+#
+# Each job downloads the official OpenVSP 3.54.0 build for its platform from
+# openvsp.org, stages bundle/ with tools/stage_bundle.py (which also smoke-tests the
+# bundled engine), then builds with tauri-action.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  OPENVSP_VERSION: "3.54.0"
+  OPENVSP_URL: "https://openvsp.org/download.php?file=zips/old"
+
+jobs:
+  # One job creates the release so the four builds don't race to make it.
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: tag
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then TAG="${{ github.ref_name }}"; else TAG="v$(node -p "require('./package.json').version")"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --target "$GITHUB_SHA"             --title "OpenVSP Studio $TAG" --notes-file .github/release-notes.md
+
+  build:
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: windows-x64
+            bundles: msi
+          - os: macos-14
+            name: macos-arm64
+            bundles: app,dmg
+            vsp_mac: ARM64
+            pbs_arch: aarch64-apple-darwin
+          - os: macos-15-intel
+            name: macos-x64
+            bundles: app,dmg
+            vsp_mac: intel-X64
+            pbs_arch: x86_64-apple-darwin
+          - os: ubuntu-24.04
+            name: linux-x64
+            bundles: deb
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: actions/setup-python@v5
+        if: runner.os != 'Linux'
+        with:
+          python-version: "3.13"   # must match the cp313 OpenVSP module
+
+      # ---------- OpenVSP distribution + Python for the bundle ----------
+
+      - name: Fetch OpenVSP (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          mkdir -p build_cache/vsp
+          curl -sSfL -o build_cache/vsp.zip "$OPENVSP_URL/windows/OpenVSP-$OPENVSP_VERSION-win64-Python3.13.zip"
+          unzip -q build_cache/vsp.zip -d build_cache/vsp
+          echo "VSP_ROOT=$(dirname "$(find build_cache/vsp -maxdepth 2 -name vsp.exe -print -quit)")" >> "$GITHUB_ENV"
+          PYV=$(python -c "import platform; print(platform.python_version())")
+          curl -sSfL -o "build_cache/python-$PYV-embed-amd64.zip" "https://www.python.org/ftp/python/$PYV/python-$PYV-embed-amd64.zip"
+          echo "PY_ARCHIVE=build_cache/python-$PYV-embed-amd64.zip" >> "$GITHUB_ENV"
+
+      - name: Fetch OpenVSP + standalone Python (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p build_cache/vsp
+          curl -sSfL -o build_cache/vsp.zip "$OPENVSP_URL/mac/OpenVSP-$OPENVSP_VERSION-macos-15-${{ matrix.vsp_mac }}-Python3.13.zip"
+          unzip -q build_cache/vsp.zip -d build_cache/vsp
+          echo "VSP_ROOT=$(dirname "$(find build_cache/vsp -maxdepth 2 -name vspaero -type f -print -quit)")" >> "$GITHUB_ENV"
+          gh release download --repo astral-sh/python-build-standalone --dir build_cache \
+            --pattern 'cpython-3.13.*-${{ matrix.pbs_arch }}-install_only.tar.gz'
+          echo "PY_ARCHIVE=$(ls build_cache/cpython-3.13.*-install_only.tar.gz | head -1)" >> "$GITHUB_ENV"
+
+      - name: Fetch OpenVSP + system packages (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf \
+            python3 python3-numpy python3-six libcminpack1 libxml2 libgomp1 libglew2.2 libglu1-mesa
+          mkdir -p build_cache/vsp
+          curl -sSfL -o build_cache/vsp.deb "$OPENVSP_URL/linux/OpenVSP-$OPENVSP_VERSION-Ubuntu-24.04_amd64.deb"
+          dpkg-deb -x build_cache/vsp.deb build_cache/vsp
+          echo "VSP_ROOT=build_cache/vsp/opt/OpenVSP" >> "$GITHUB_ENV"
+
+      - name: Stage bundle
+        shell: bash
+        run: |
+          ARGS=(--vsp-root "$VSP_ROOT")
+          [ -n "${PY_ARCHIVE:-}" ] && ARGS+=(--python-archive "$PY_ARCHIVE")
+          if [ "$RUNNER_OS" = "Linux" ]; then PY=/usr/bin/python3; else PY=python; fi
+          "$PY" tools/stage_bundle.py "${ARGS[@]}"
+
+      # ---------- build + upload ----------
+
+      - name: Install JS dependencies
+        run: |
+          npm ci
+          npm ci --prefix ui
+
+      - uses: tauri-apps/tauri-action@v0
+        with:
+          tagName: ${{ needs.release.outputs.tag }}
+          args: --bundles ${{ matrix.bundles }}

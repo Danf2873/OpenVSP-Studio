@@ -40,9 +40,12 @@ impl Default for Settings {
     }
 }
 
-/// An OpenVSP root holds the vsp.exe launcher and the bundled python/openvsp package.
+/// The OpenVSP launcher's file name on this platform.
+const VSP_EXE: &str = if cfg!(windows) { "vsp.exe" } else { "vsp" };
+
+/// An OpenVSP root holds the vsp launcher and the bundled python/openvsp package.
 fn is_openvsp_root(dir: &Path) -> bool {
-    dir.join("vsp.exe").is_file() && dir.join("python").join("openvsp").is_dir()
+    dir.join(VSP_EXE).is_file() && dir.join("python").join("openvsp").is_dir()
 }
 
 /// Strip the Windows verbatim prefix that canonicalize() adds.
@@ -61,23 +64,46 @@ fn exe_dir() -> Option<PathBuf> {
     std::env::current_exe().ok().and_then(|e| e.parent().map(Path::to_path_buf))
 }
 
-/// Installed layout: `<install>/openvsp` (resource) holds the OpenVSP files.
+/// Where an installer puts bundled resources: next to the exe (Windows MSI),
+/// `Contents/Resources` (macOS .app) or `/usr/lib/<product>` (Linux .deb).
+fn resource_dirs() -> Vec<PathBuf> {
+    let Some(exe) = exe_dir() else { return Vec::new() };
+    vec![
+        exe.clone(),
+        exe.join("..").join("Resources"),
+        exe.join("..").join("lib").join("OpenVSP Studio"),
+        exe.join("..").join("lib").join("openvsp-studio"),
+    ]
+}
+
+/// Installed layout: `<resources>/openvsp` holds the OpenVSP files.
 fn bundled_root() -> Option<PathBuf> {
-    let dir = exe_dir()?.join("openvsp");
-    is_openvsp_root(&dir).then(|| clean(dir))
+    resource_dirs()
+        .into_iter()
+        .map(|d| d.join("openvsp"))
+        .find(|d| is_openvsp_root(d))
+        .map(clean)
 }
 
-/// Installed layout: `<install>/python/python.exe` is the bundled interpreter.
+/// Installed layout: the bundled interpreter, `<resources>/python/python.exe` on
+/// Windows or `<resources>/python/bin/python3` on macOS. Linux uses the system python3.
 fn bundled_python() -> Option<PathBuf> {
-    let py = exe_dir()?.join("python").join("python.exe");
-    py.is_file().then(|| clean(py))
+    let rel: &[&str] = if cfg!(windows) { &["python.exe"] } else { &["bin", "python3"] };
+    resource_dirs()
+        .into_iter()
+        .map(|d| rel.iter().fold(d.join("python"), |p, part| p.join(part)))
+        .find(|p| p.is_file())
+        .map(clean)
 }
 
-/// The bundled interpreter when installed, else `python` from PATH.
+/// Interpreter name to find on PATH when nothing is bundled.
+const PATH_PYTHON: &str = if cfg!(windows) { "python" } else { "python3" };
+
+/// The bundled interpreter when installed, else python from PATH.
 pub fn default_python() -> String {
     bundled_python()
         .map(|p| p.to_string_lossy().into_owned())
-        .unwrap_or_else(|| "python".to_string())
+        .unwrap_or_else(|| PATH_PYTHON.to_string())
 }
 
 /// Installed: the bundled `openvsp` resource folder. Debug builds: the parent of
@@ -107,7 +133,7 @@ fn repair(mut s: Settings) -> Settings {
         s.openvsp_root = default_openvsp_root().to_string_lossy().into_owned();
     }
     let py = Path::new(&s.python);
-    if s.python == "python" || (py.is_absolute() && !py.is_file()) {
+    if s.python == "python" || s.python == "python3" || (py.is_absolute() && !py.is_file()) {
         s.python = default_python();
     }
     s

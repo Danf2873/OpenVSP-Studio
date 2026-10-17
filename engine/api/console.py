@@ -44,9 +44,9 @@ def console_exec(code: str) -> dict:
 
 @method("console.runScript")
 def console_run_script(path: str) -> dict:
-    exe = os.path.join(VSP_ROOT, "vspscript.exe")
+    exe = os.path.join(VSP_ROOT, "vspscript.exe" if os.name == "nt" else "vspscript")
     if not os.path.isfile(exe):
-        raise RpcError(f"vspscript.exe not found at {exe}")
+        raise RpcError(f"vspscript not found at {exe}")
     if not os.path.isfile(path):
         raise RpcError(f"script not found: {path}")
     try:
