@@ -128,4 +128,5 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         with:
           tagName: ${{ needs.release.outputs.tag }}
+          tauriScript: npx tauri
           args: --bundles ${{ matrix.bundles }}
