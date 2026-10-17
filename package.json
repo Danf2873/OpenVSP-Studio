@@ -4,6 +4,7 @@
   "private": true,
   "description": "OpenVSP Studio desktop shell (Tauri 2)",
   "scripts": {
+    "tauri": "tauri",
     "dev": "tauri dev",
     "build": "tauri build",
     "stage": "python tools/stage_bundle.py",
