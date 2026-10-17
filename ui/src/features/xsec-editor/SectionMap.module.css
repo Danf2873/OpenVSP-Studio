@@ -1,0 +1,135 @@
+/* Section map strip at the top of the cross-section editor. */
+
+.root {
+  min-height: 136px;
+  margin: 0 var(--space-3) var(--space-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  overflow: hidden;
+  user-select: none;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 10px 0;
+  font-size: 11px;
+}
+
+.title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.axis {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.svg {
+  display: block;
+  touch-action: none;
+}
+
+.axisLine {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.body {
+  fill: var(--accent-blue-soft);
+  stroke: var(--text-secondary);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+}
+
+.extendZone {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-dasharray: 3 3;
+}
+
+.station line,
+.stationFixed line,
+.stationSelected line {
+  stroke-width: 1.5;
+}
+
+.station line {
+  stroke: var(--text-secondary);
+}
+
+.station circle {
+  fill: var(--bg-primary);
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  cursor: ew-resize;
+}
+
+.station:hover line,
+.station:hover circle {
+  stroke: var(--accent-blue);
+}
+
+.stationFixed line {
+  stroke: var(--border-strong);
+  stroke-dasharray: 2 2;
+}
+
+.stationFixed circle {
+  fill: var(--border-strong);
+  stroke: none;
+  cursor: pointer;
+}
+
+.stationSelected line {
+  stroke: var(--accent-green);
+  stroke-width: 2;
+}
+
+.stationSelected circle {
+  fill: var(--accent-green);
+  stroke: var(--bg-primary);
+  stroke-width: 1.5;
+  cursor: ew-resize;
+}
+
+.station text,
+.stationFixed text,
+.stationSelected text {
+  font-size: 10px;
+  fill: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.stationSelected text {
+  fill: var(--accent-green);
+  font-weight: 600;
+}
+
+.posLabel {
+  font-size: 10px;
+}
+
+.ghost line {
+  stroke: var(--accent-blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+.ghost circle {
+  fill: var(--accent-blue);
+}
+
+.ghost path {
+  stroke: var(--on-accent);
+  stroke-width: 1.5;
+}
+
+.ghost text {
+  font-size: 10px;
+  fill: var(--accent-blue);
+  font-variant-numeric: tabular-nums;
+}

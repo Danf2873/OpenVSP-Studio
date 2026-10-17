@@ -1,0 +1,118 @@
+/*
+ * Design tokens. This is the ONLY file in src/ that may contain hex colors.
+ * Light is the default; dark applies via prefers-color-scheme unless the
+ * <html> element carries data-theme="light", or data-theme="dark" forces it.
+ */
+
+:root {
+  color-scheme: light;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #e8e8ed;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  /* Use for small (12px and under) secondary text to keep 4.5:1 contrast. */
+  --text-label: #6e6e73;
+  --accent-blue: #0071e3;
+  --accent-green: #30d158;
+  --danger: #ff3b30;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-strong: rgba(0, 0, 0, 0.18);
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-blur: blur(20px) saturate(180%);
+  --accent-blue-soft: rgba(0, 113, 227, 0.12);
+  --danger-soft: rgba(255, 59, 48, 0.12);
+  --scrim: rgba(0, 0, 0, 0.2);
+  --hover-tint: rgba(0, 0, 0, 0.05);
+  --press-tint: rgba(0, 0, 0, 0.09);
+  --on-accent: #ffffff;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.12);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-pill: 9999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --dur-fast: 150ms;
+  --dur-mid: 300ms;
+  --dur-slow: 500ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable", "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, "Cascadia Mono", monospace;
+
+  /* Row heights are density-driven. */
+  --row-h: 36px;
+  --control-h: 32px;
+  --control-h-lg: 44px;
+}
+
+:root[data-density="compact"] {
+  --row-h: 28px;
+}
+
+:root[data-density="comfortable"] {
+  --row-h: 36px;
+}
+
+/* Dark: system preference, unless explicitly light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg-primary: #000000;
+    --bg-secondary: #1d1d1f;
+    --bg-tertiary: #2c2c2e;
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-label: #a1a1a6;
+    --accent-blue: #0a84ff;
+    --accent-green: #30d158;
+    --danger: #ff3b30;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --glass-bg: rgba(29, 29, 31, 0.72);
+    --accent-blue-soft: rgba(10, 132, 255, 0.18);
+    --danger-soft: rgba(255, 59, 48, 0.18);
+    --scrim: rgba(0, 0, 0, 0.5);
+    --hover-tint: rgba(255, 255, 255, 0.07);
+    --press-tint: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* Explicit dark override. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-primary: #000000;
+  --bg-secondary: #1d1d1f;
+  --bg-tertiary: #2c2c2e;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --text-label: #a1a1a6;
+  --accent-blue: #0a84ff;
+  --accent-green: #30d158;
+  --danger: #ff3b30;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --glass-bg: rgba(29, 29, 31, 0.72);
+  --accent-blue-soft: rgba(10, 132, 255, 0.18);
+  --danger-soft: rgba(255, 59, 48, 0.18);
+  --scrim: rgba(0, 0, 0, 0.5);
+  --hover-tint: rgba(255, 255, 255, 0.07);
+  --press-tint: rgba(255, 255, 255, 0.12);
+}

@@ -1,0 +1,684 @@
+/* Cross-Section Editor. Colors come only from tokens.css (no literals). */
+
+/* ---------- root (panel or pop-out window) ---------- */
+
+.root {
+  /* Axis colors: the red X axis and the green Y axis, softened. */
+  --axis-x: color-mix(in srgb, var(--danger) 85%, transparent);
+  --axis-y: color-mix(in srgb, var(--accent-green) 85%, transparent);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  padding: 0 0 var(--space-2);
+  overflow-y: auto;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.root > * {
+  flex: none;
+}
+
+.root > .canvasWrap {
+  flex: none;
+}
+
+.inWindow {
+  padding: var(--space-3);
+}
+
+/* ---------- title bar ---------- */
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.titleText {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.titleActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ---------- geometry line and tools ---------- */
+
+.topBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) 0;
+}
+
+.geomRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.geomName {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.toolRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+.surfSelect {
+  max-width: 170px;
+}
+
+.shapeSelect {
+  max-width: 180px;
+}
+
+.liveChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-blue-soft);
+  color: var(--text-label);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-green);
+}
+
+/* ---------- square canvas ---------- */
+
+.canvasWrap {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 0 var(--space-3);
+  box-sizing: border-box;
+}
+
+/* Pop-out window: the square is limited by the window height as well as its width. */
+.inWindow .canvasWrap {
+  flex: 1 1 0;
+  min-height: 0;
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+
+.canvas {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  outline: none;
+  user-select: none;
+  touch-action: none;
+}
+
+.inWindow .canvas {
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
+  aspect-ratio: auto;
+}
+
+.canvasPan {
+  cursor: grab;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.grid {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+
+.axisX,
+.axisY {
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.axisX {
+  stroke: var(--axis-x);
+}
+
+.axisY {
+  stroke: var(--axis-y);
+}
+
+.target circle {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 1;
+}
+
+.target path {
+  stroke: var(--text-primary);
+  stroke-width: 1;
+}
+
+.ghost {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 1.25;
+  stroke-dasharray: 5 4;
+  opacity: 0.45;
+}
+
+.profile {
+  fill: var(--accent-blue-soft);
+  stroke: var(--text-primary);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.controlPoly {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.8;
+}
+
+.handleLine {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.handle {
+  fill: var(--bg-primary);
+  stroke: var(--accent-blue);
+  stroke-width: 1.5;
+  cursor: ew-resize;
+}
+
+.handleY {
+  cursor: ns-resize;
+}
+
+.handle:hover,
+.handle:focus-visible {
+  fill: var(--accent-blue);
+}
+
+.handle:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Anchor points: white dots. */
+.point {
+  fill: var(--on-accent);
+  stroke: var(--text-primary);
+  stroke-width: 1.25;
+  cursor: move;
+}
+
+.point:hover {
+  stroke: var(--accent-blue);
+}
+
+/* Handles on cubic curves: hollow dots. */
+.handlePoint {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 1.25;
+  pointer-events: all;
+  cursor: move;
+}
+
+.handlePoint:hover {
+  stroke: var(--accent-blue);
+}
+
+.pointSelected {
+  fill: var(--accent-blue);
+  stroke: var(--on-accent);
+}
+
+.pointLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  fill: var(--text-primary);
+  paint-order: stroke;
+  stroke: var(--bg-tertiary);
+  stroke-width: 3px;
+}
+
+.pointLabelSelected {
+  fill: var(--accent-blue);
+  font-weight: 700;
+}
+
+.dims {
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-label);
+  pointer-events: none;
+}
+
+.hint {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 6px;
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  font-size: 11px;
+  color: var(--text-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Hover marker showing where a click on the outline adds a control point. */
+.addGhost circle {
+  fill: var(--bg-primary);
+  stroke: var(--accent-green);
+  stroke-width: 2;
+}
+
+.addGhost path {
+  stroke: var(--accent-green);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+/* ---------- readout row ---------- */
+
+.readRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+}
+
+.coords {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 170px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.coordsTag {
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stepInput {
+  box-sizing: border-box;
+  width: 56px;
+  height: var(--control-h);
+  padding: 0 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.stepInput::-webkit-outer-spin-button,
+.stepInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stepInput:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 1px;
+}
+
+.mirrors {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-label);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.check input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: var(--accent-blue);
+  cursor: inherit;
+}
+
+.checkDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- section actions ---------- */
+
+.actionRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-1);
+  padding: 0 var(--space-3);
+}
+
+.actionRow > button {
+  min-width: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+  white-space: normal;
+  line-height: 1.15;
+  font-size: 12px;
+}
+
+.actionOn {
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue);
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+}
+
+/* ---------- parameter grid ---------- */
+
+.parmGrid {
+  display: grid;
+  grid-template-columns: 72px repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 4px var(--space-2);
+  padding: 0 var(--space-3);
+}
+
+.parmColHead {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-label);
+}
+
+.parmRowLabel {
+  font-size: 12px;
+  color: var(--text-label);
+}
+
+.parmEmpty {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.allParms {
+  margin: 0 var(--space-3);
+}
+
+.sectionsDisclosure {
+  margin: 0 var(--space-3);
+}
+
+/* ---------- section thumbnails ---------- */
+
+.strip {
+  position: relative;
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.card {
+  flex: 0 0 auto;
+  width: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card:active {
+  transform: translateY(0);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.cardSelected {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: -2px;
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  height: 46px;
+}
+
+.thumbPath {
+  fill: var(--accent-blue-soft);
+  stroke: var(--accent-blue);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.cardCaption {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-label);
+}
+
+.cardIndex {
+  margin-right: 2px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.cardSelected .cardCaption {
+  color: var(--accent-blue);
+}
+
+/* ---------- states and dialog ---------- */
+
+.loadingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  color: var(--text-secondary);
+}
+
+.centerFill {
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+.errorText {
+  padding: var(--space-2) var(--space-3);
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.searchInput {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-h);
+  margin-bottom: var(--space-2);
+  padding: 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.searchInput:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 1px;
+}
+
+.libList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.libItem {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.libItem:hover {
+  background: var(--hover-tint);
+}
+
+.libItem:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* One-click switch from a parametric shape (e.g. an airfoil) to draggable points. */
+.editPointsBtn {
+  position: absolute;
+  top: var(--space-2);
+  right: calc(var(--space-3) + var(--space-2));
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--accent-blue);
+  color: var(--on-accent);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+}
+
+.editPointsBtn:hover {
+  transform: translateY(-1px);
+}
+
+.editPointsBtn:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}

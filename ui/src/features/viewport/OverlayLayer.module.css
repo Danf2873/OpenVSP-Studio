@@ -1,0 +1,13 @@
+/* Labels drawn in 3D space (drei Html). Glass chip, token colours only. */
+.label {
+  padding: 2px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: var(--text-primary);
+  font: 500 11px/1.4 var(--font-sans);
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+}

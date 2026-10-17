@@ -1,0 +1,4 @@
+bundle/
+build_cache/
+src-tauri/target/
+node_modules/

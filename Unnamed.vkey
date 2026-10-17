@@ -1,0 +1,13 @@
+# VSPGEOM v3 Tag Key File
+Unnamed.vspgeom
+2
+
+# part#,geom#,surf#,gname,gid,thick,plate,copy#,geomcopy#
+1,0,0,WingGeom_C,VCQYGSWIEZ,0,3,1,1
+2,0,1,WingGeom_C,VCQYGSWIEZ,0,3,2,1
+
+2
+
+# tag#,part#,ssname1,ssname2,...,ssid1,ssid2,...
+1,1
+2,2

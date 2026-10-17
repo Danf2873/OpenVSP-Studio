@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Permissions for the main window and pop-out windows (e.g. the cross-section editor).","local":true,"windows":["*"],"permissions":["core:default","dialog:default","fs:default",{"identifier":"fs:allow-read-text-file","allow":[{"path":"**"}]},{"identifier":"fs:allow-write-text-file","allow":[{"path":"**"}]}]}}

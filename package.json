@@ -1,0 +1,15 @@
+{
+  "name": "openvsp-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenVSP Studio desktop shell (Tauri 2)",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "stage": "python tools/stage_bundle.py",
+    "dist": "python tools/stage_bundle.py && tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

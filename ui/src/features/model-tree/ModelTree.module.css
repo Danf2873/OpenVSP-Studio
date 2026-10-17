@@ -1,0 +1,125 @@
+.pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.paneHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 var(--space-3) 0 var(--space-4);
+}
+
+.paneTitle {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.tree {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 6px 12px;
+  border-radius: var(--radius-md);
+  transition: box-shadow var(--dur-fast) var(--ease);
+}
+
+.treeDropRoot {
+  box-shadow: inset 0 0 0 2px var(--accent-blue);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--row-h);
+  margin: 1px 0;
+  padding-right: 4px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: default;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.row:hover {
+  background: var(--hover-tint);
+}
+.row[aria-selected="true"] {
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue);
+  font-weight: 500;
+}
+.row[data-drop="into"] {
+  box-shadow: inset 0 0 0 2px var(--accent-blue);
+}
+.row[data-hidden="true"] .name,
+.row[data-hidden="true"] .icon {
+  opacity: 0.45;
+}
+
+.twisty {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+}
+.twisty:hover {
+  background: var(--press-tint);
+}
+.twistySpacer {
+  width: 18px;
+  flex: none;
+}
+.twisty > svg {
+  transition: transform var(--dur-fast) var(--ease);
+}
+.twisty[data-open="true"] > svg {
+  transform: rotate(90deg);
+}
+
+.icon {
+  flex: none;
+  color: var(--text-secondary);
+}
+.row[aria-selected="true"] .icon {
+  color: var(--accent-blue);
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.renameInput {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--accent-blue);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 13px;
+}
+.renameInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-blue-soft);
+}
+
+.eye {
+  flex: none;
+}

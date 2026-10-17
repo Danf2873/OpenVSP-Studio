@@ -1,0 +1,227 @@
+/* Parameter Explorer dock pane. Colors come only from tokens.css. */
+
+.explorer {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  background: var(--bg-primary);
+}
+
+/* ---------- container list ---------- */
+
+.side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--border-color);
+}
+
+.sideHead {
+  flex: none;
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sideList {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-1) var(--space-1) var(--space-3);
+}
+
+.secGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.secTitle {
+  padding: var(--space-2) var(--space-2) var(--space-1);
+  color: var(--text-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.containerBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--row-h);
+  padding: 4px var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+  text-align: left;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.containerBtn:hover {
+  background: var(--hover-tint);
+}
+
+.containerBtn[aria-pressed="true"] {
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue);
+}
+
+.containerBtn:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: -2px;
+}
+
+.containerName {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.containerSub {
+  color: var(--text-label);
+  font-size: 11px;
+}
+
+/* ---------- main ---------- */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.searchBar {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.searchField {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.searchInput,
+.input {
+  width: 100%;
+  min-width: 0;
+  height: var(--control-h);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.searchInput {
+  padding: 0 var(--space-2) 0 30px;
+}
+
+.input {
+  padding: 0 var(--space-2);
+}
+
+.searchInput:focus,
+.input:focus {
+  border-color: var(--accent-blue);
+  background: var(--bg-primary);
+  outline: none;
+}
+
+.searchInput:focus-visible,
+.input:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 0;
+}
+
+.hint {
+  padding: 0 var(--space-1);
+  color: var(--text-label);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.results {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-2) var(--space-3) var(--space-4);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.containerHead {
+  margin-bottom: var(--space-2);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.resultsHead {
+  padding-bottom: var(--space-2);
+  color: var(--text-label);
+  font-size: 12px;
+}
+
+.hitGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.hitGroupTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hitCount {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.hitRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+}
+
+.hitMeta {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  color: var(--text-label);
+  font-size: 11px;
+}
