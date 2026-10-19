@@ -120,7 +120,7 @@ Installers are attached to each [GitHub release](https://github.com/Danf2873/Ope
 | Platform | File | Notes |
 |---|---|---|
 | Windows x64 | `OpenVSP Studio_<ver>_x64_en-US.msi` | Includes its own Python 3.13 with NumPy. It also runs on Windows on ARM through emulation. |
-| Windows ARM64 | `OpenVSP Studio_<ver>_arm64_en-US.msi` | Built locally (see [Building installers](#building-installers)). The app is native; the OpenVSP solvers run emulated. |
+| Windows ARM64 | `OpenVSP Studio_<ver>_arm64_en-US.msi` | Built by the release workflow. The app is native; the OpenVSP solvers run emulated. |
 | macOS Apple Silicon | `OpenVSP Studio_<ver>_aarch64.dmg` | Includes a standalone Python 3.13. |
 | macOS Intel | `OpenVSP Studio_<ver>_x64.dmg` | Includes a standalone Python 3.13. |
 | Linux (Ubuntu 24.04) | `OpenVSP Studio_<ver>_amd64.deb` | Uses the system Python 3.12 (the OpenVSP Linux build links against it). |
@@ -383,7 +383,7 @@ npx tauri build
 
 ### GitHub Actions (all platforms)
 
-[`.github/workflows/release.yml`](.github/workflows/release.yml) builds the Windows x64 MSI, the macOS Apple Silicon and Intel DMGs, and the Linux `.deb`, then attaches them to a GitHub release. Each job:
+[`.github/workflows/release.yml`](.github/workflows/release.yml) builds the Windows x64 and ARM64 MSIs, the macOS Apple Silicon and Intel DMGs, and the Linux `.deb`, then attaches them to a GitHub release. Each job:
 
 1. downloads the official OpenVSP 3.54.0 build for its platform from openvsp.org;
 2. downloads the matching Python;

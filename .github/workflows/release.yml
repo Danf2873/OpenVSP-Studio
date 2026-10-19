@@ -19,7 +19,7 @@ env:
   OPENVSP_URL: "https://openvsp.org/download.php?file=zips/old"
 
 jobs:
-  # One job creates the release so the four builds don't race to make it.
+  # One job creates the release so the five builds don't race to make it.
   release:
     runs-on: ubuntu-latest
     outputs:
@@ -42,20 +42,23 @@ jobs:
         include:
           - os: windows-latest
             name: windows-x64
-            bundles: msi
+            args: --bundles msi
+          - os: windows-latest
+            name: windows-arm64
+            args: --bundles msi --target aarch64-pc-windows-msvc
           - os: macos-14
             name: macos-arm64
-            bundles: app,dmg
+            args: --bundles app,dmg
             vsp_mac: ARM64
             pbs_arch: aarch64-apple-darwin
           - os: macos-15-intel
             name: macos-x64
-            bundles: app,dmg
+            args: --bundles app,dmg
             vsp_mac: intel-X64
             pbs_arch: x86_64-apple-darwin
           - os: ubuntu-24.04
             name: linux-x64
-            bundles: deb
+            args: --bundles deb
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}
     env:
@@ -68,6 +71,10 @@ jobs:
           node-version: 22
 
       - uses: dtolnay/rust-toolchain@stable
+
+      - name: Add Rust target (Windows ARM64)
+        if: matrix.name == 'windows-arm64'
+        run: rustup target add aarch64-pc-windows-msvc
 
       - uses: actions/setup-python@v5
         if: runner.os != 'Linux'
@@ -132,4 +139,4 @@ jobs:
           tagName: ${{ needs.release.outputs.tag }}
           projectPath: .
           tauriScript: npx tauri
-          args: --bundles ${{ matrix.bundles }}
+          args: ${{ matrix.args }}
