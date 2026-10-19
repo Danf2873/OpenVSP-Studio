@@ -28,7 +28,11 @@ npm start
 
 <table>
 <tr>
-<td width="50%"><img src="docs/img/fuselage.png" alt="Editing a fuselage section"><br><sub><b>Sculpt any section.</b> Pick a section on the map, drag it along the body, or click between sections to add one.</sub></td>
+<td width="50%"><img src="docs/img/fuselage.png" alt="Editing a fuselage section"><br><sub><b>Edit any section.</b> Pick a section on the map, drag it along the body, or click between sections to add one.</sub></td>
+<td width="50%"><img src="docs/img/edit-points.png" alt="Editing points on a fuselage section"><br><sub><b>Sculpt freely.</b> Edit points turns a section into a curve you can reshape with handles, without changing it first.</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/img/analysis.png" alt="CompGeom analysis results"><br><sub><b>Analyse in place.</b> Run an analysis, read the results and export them to CSV from the same window.</sub></td>
 <td width="50%"><img src="docs/img/welcome.png" alt="Welcome screen"><br><sub><b>Start fast.</b> New model, open a file, or load a bundled VSPAERO example.</sub></td>
 </tr>
 </table>
