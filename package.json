@@ -4,6 +4,7 @@
   "private": true,
   "description": "OpenVSP Studio desktop shell (Tauri 2)",
   "scripts": {
+    "start": "node tools/start.mjs",
     "tauri": "tauri",
     "dev": "tauri dev",
     "build": "tauri build",
